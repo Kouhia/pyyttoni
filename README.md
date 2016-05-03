@@ -1,2 +1,2 @@
 # pyyttoni
-python tests
+python test scripts
