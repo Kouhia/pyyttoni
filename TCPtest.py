@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+#
+# Simple TCP test
 
 import socket
 
