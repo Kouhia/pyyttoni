@@ -4,14 +4,15 @@
 # by: Kouhia
 
 import sys
+reload(sys)
 import time
 import urllib2
 import re
 from HTMLParser import HTMLParser
 from urlparse import urlparse
 
-
-url = "http://localhost.localdomain" # Original URL to connect
+sys.setdefaultencoding('utf8') # Set UTF8
+url = "http://reddit.com" # Original URL to connect
 destination_linkfile = "gatheredlinks.txt" # Destination file for gathered links
 destination_domainfile = "gathereddomains.txt" # Destination file for gathered domains
 
@@ -20,7 +21,7 @@ headers = {}
 headers['User-Agent'] = "BillyBot"
 
 # Request delay time (seconds)
-request_delay = 2
+request_delay = 1
 
 # 
 class WebParser (HTMLParser):
@@ -45,7 +46,7 @@ class WebParser (HTMLParser):
       #has_plaaplaa = re.search(r"(plaaplaa)", data)
       #has_kuukuu = re.search(r"(kuukuu)", data)
       if has_jquery:
-        print "INFO: Found jquery related function."
+        print "INFO: Found jquery related stuff from %s" % url
         #print data
       #DEBUG time.sleep(1)
 
@@ -84,6 +85,8 @@ def RequestURL (url, headers):
     parseri = WebParser()
     parseri.feed(url_response.read())
     url_response.close()
+  except TypeError as typerr:
+    print "ERROR: TypeError while parsing HTML :( ", typerr
   except:
     print "ERROR: Unexpected error while parsing site(HTML)."
     print "ERROR: ", sys.exc_info()
@@ -104,7 +107,8 @@ def write_list_disk():
 # Main
   
 Looppicountteri = 0
-Errorcounter = 0
+Errorcountteri = 0
+
 while True:
   try:
     sort_lists()
@@ -121,15 +125,16 @@ while True:
     sys.exit()
   except UnicodeDecodeError as e:
     print "ERROR: UnicodeDecodeError occured. Trying to continue..."
-    Errorcounter += 1
+    Errorcountteri += 1
     print e
     time.sleep(request_delay)
-    if Errorcounter >= 5:
+    if Errorcountteri >= 5:
       print "ERROR: Too many errors. Saving and shutting down..."
       write_list_disk()
       sys.exit()
   except SystemExit:
     print "Terminating program execution..."
+    write_list_disk()
     sys.exit()
   except:
     print "ERROR: Unexpected critical error while running program. Exiting and saving links..."

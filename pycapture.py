@@ -13,8 +13,8 @@ import sqlite3
 # sqlite database
 databasefile = 'network.db'
 
-sqliteconn = 0 # Global DB Connection 
-sqlitec = 0 # Global DB cursor
+sqliteconn = 0 # DB Connection 
+sqlitec = 0 # DB cursor
 
 
 
@@ -55,16 +55,24 @@ def write_traffic_sqlite (timestamp, mac1, mac2, protocol, broadcast):
 # http://sqlite.org/lang_conflict.html
 # 
 
+def decode_mac (binarymac):
+    try:
+      return binascii.hexlify(binarymac)
+    except:
+      print "Failed to decode MAC address!"
+      return false
 def Ethernet_handler (ts, pkt):   
-   isBroadcast = None
+   isBroadcast = False
 
    # Parse RAW pcap data to Ethernet object
    eth = dpkt.ethernet.Ethernet(pkt)
-   # Convert eth.src to ASCII HEX
-   ethsource = binascii.hexlify(eth.src)
-   # Convert eth.dst to ASCII HEX
-   ethdestination = binascii.hexlify(eth.dst)
 
+   # Convert eth.src to ASCII HEX (Human readable MAC address)
+   # ethsource = binascii.hexlify(eth.src)
+   # Convert eth.dst to ASCII HEX (Human readable MAC address)
+   # ethdestination = binascii.hexlify(eth.dst)
+   ethsource = decode_mac(eth.src)
+   ethdestination = decode_mac(eth.dst)
    # Data from Ethernet "frame"
    print "Timestamp: %s | Source ETH address: %s | Destination ETH address: %s" % (ts, ethsource, ethdestination)
 

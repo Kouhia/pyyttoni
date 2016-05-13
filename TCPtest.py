@@ -1,18 +1,31 @@
 #!/usr/bin/env python
 #
-# Simple TCP test example
+# Simple TCP client test
 
 import socket
 
 
-TCP_IP = '127.0.0.1'
-TCP_PORT = 5055
-BUFFER_SIZE = 1024
-MESSAGE="Hello, TCP socket!"
+target_host = 'www.google.fi'
+target_port = 80
+http_request = "GET / HTTP/1.1\r\nHost: %s\r\n\r\n" % target_host
+buffer_size = 4096
 
-socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-socket.connect((TCP_IP, TCP_PORT))
-socket.send(MESSAGE)
-data = socket.recv(BUFFER_SIZE)
-s.close()
+
+# new socket object
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# connect
+client.connect((target_host, target_port))
+
+# send data
+client.send(http_request)
+
+# recieve data
+response_data = client.recv(buffer_size)
+
+# print data
+print response_data
+
+# Close connection
+client.close()
 
