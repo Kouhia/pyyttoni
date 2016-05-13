@@ -12,7 +12,7 @@ from HTMLParser import HTMLParser
 from urlparse import urlparse
 
 sys.setdefaultencoding('utf8') # Set UTF8
-url = "http://reddit.com" # Original URL to connect
+url = "http://localhost.localdomain" # Original URL to connect
 destination_linkfile = "gatheredlinks.txt" # Destination file for gathered links
 destination_domainfile = "gathereddomains.txt" # Destination file for gathered domains
 
@@ -21,7 +21,7 @@ headers = {}
 headers['User-Agent'] = "BillyBot"
 
 # Request delay time (seconds)
-request_delay = 1
+request_delay = 5
 
 # 
 class WebParser (HTMLParser):
@@ -78,7 +78,7 @@ def RequestURL (url, headers):
 #  except URLError:
 #    print '*********************'
   except:
-    print "ERROR: Error while opening URL."
+    print "ERROR: Error while opening URL: %s" % url
     print "ERROR: ", sys.exc_info()[1]
     sys.exit()    
   try:
@@ -104,6 +104,15 @@ def write_list_disk():
     for domain in WebParser.domainlist:
       filehandle.write(domain + '\n')
 
+def load_list_disk():
+  pass
+  #with open(destination_linkfile, 'r') as filehandle:
+  #  for link in WebParser.linklist:
+  #    filehandle.write(link + '\n')
+  #with open(destination_domainfile, 'r') as filehandle:
+  #  for domain in WebParser.domainlist:
+  #    filehandle.write(domain + '\n')
+
 # Main
   
 Looppicountteri = 0
@@ -111,11 +120,12 @@ Errorcountteri = 0
 
 while True:
   try:
-    sort_lists()
-    RequestURL(url, headers)
+    sort_lists() # deduplicate and sort domain and link lists
+    RequestURL(url, headers) # Request next URL
     print "INFO: Gathered %d unique links and %d unique domain names." % (len(WebParser.linklist), len(WebParser.domainlist))
     Looppicountteri += 1
-    url = WebParser.linklist[Looppicountteri]
+    url = WebParser.linklist[Looppicountteri] #FIXME!! Change URL to next in list.
+    # Starts over every time program is restarted. Does not remember allready crawled links.
     print "INFO: New destination link: %s" % WebParser.linklist[Looppicountteri]
     print "INFO: Waiting for %d seconds..." % request_delay
     time.sleep(request_delay)
