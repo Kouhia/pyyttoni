@@ -84,7 +84,7 @@ def IsLinux ():
 
 # Help text for script usage
 def ScriptHelp ():
-  print "Usage: Python lodjublock.py (mode) (ipv4 address)"
+  print "Usage: python %s (mode) (ipv4 address)" % sys.argv[0]
   print "Valid modes are: search and remove"
 
 # Script mode select
