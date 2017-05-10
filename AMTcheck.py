@@ -6,8 +6,6 @@
 import requests
 import sys
 
-# IP range to check
-iplist = ip_range('192.168.0.0','192.168.0.10')
 
 def ip_range(start_ip,end_ip):
   start = list(map(int,start_ip.split('.')))
@@ -51,6 +49,11 @@ def CheckAMT (ip, protocol):
     print('Failed for IP ' + ip)
 
 #####################################
+#####################################
+
+
+# IP range to check
+iplist = ip_range('192.168.0.0','192.168.0.10')
 
 for ipaddr in iplist:
   CheckAMT(ipaddr, 'http') 
